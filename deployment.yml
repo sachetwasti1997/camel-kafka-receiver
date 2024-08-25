@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: receiver-microservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: receiver-microservice
+  template:
+    metadata:
+      labels:
+        app: receiver-microservice
+    spec:
+      containers:
+        - name: receiver-microservice
+          image: sachetwasti61/receiver-microservice
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: "5"
+              memory: "2Gi"
+            requests:
+              cpu: "5"
+              memory: "1Gi"
+          ports:
+            - containerPort: 8081
+#          env:
+#            - name: CONFIG_SERVER_URL
+#              valueFrom:
+#                configMapKeyRef:
+#                  key: config_server_access
+#                  name: config-server-url
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: receiver-microservice-srv
+spec:
+  selector:
+    app: receiver-microservice
+  ports:
+    - port: 8081
+      targetPort: 8081
